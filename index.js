@@ -19,15 +19,15 @@ let workday=[
 ];
 let todoevents=JSON.parse(localStorage.getItem("officeday"));
 if (todoevents){
-    workday=todoevents;
+    officeday=todoevents;
 }
-$("#presentday").text(presentday);
+$("#today").text(presentday);
 workday.forEach(function(timeSeto,index){
     let timeset=timeSeto.time;
     let eventcolor=colorR(timeset);
     let row =
     '<div class="blocktime"id="'+index+'"><div class="row no-gutters input-group"><div class="col-sm col-lg-1 input=group-prepend hour justify-content sm-end pr-3 pt-3">'+timeset+'</div><textarea class="form-control'+eventcolor+'">'+timeSeto.event+
-    '</textarea><div class ="com-sm col-lg-1 input-group-append"><button class="SaveBtn btn-danger"type ="submit"><i class ="fas fa-save"></i></button></div></div></div>';
+    '</textarea><div class ="com-sm col-lg-1 input-group-append"><button class="SaveBtn btn-success"type ="submit"><i class ="fas fa-save"></i></button></div></div></div>';
     $(".container").append(row);
 
 });
@@ -42,18 +42,19 @@ function colorR(time){
         return "now";
     }
 }
-$(".saveBtn").on("click",function(){
-    let newid=parseInt(
+$(".SaveBtn").on("click",function(){
+    let successID=parseInt(
         $(this)
-        .closest(".time-block")
+        .closest(".blocktime")
         .attr("id")
     );
  let userinput=$.trim(
      $(this)
      .parent()
      .siblings("textarea")
-			.val()
+            .val(),
  );
- workday[newid].event=userinput;
+ workday[successID].event=userinput;
  localStorage.setItem("officeday", JSON.stringify(workday)); 
+ 
 })
