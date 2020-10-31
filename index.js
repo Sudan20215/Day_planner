@@ -1,60 +1,79 @@
-$(function(){});
-let presentday=moment().format('MMMM Do YYYY, h:mm:ss a');
-let present = moment().format("H A");
-let workday=[
-    {time:"8 AM",event:""},
-    {time:"9 AM",event:""},
-    {time:"10 AM",event:""},
-    {time:"11 AM",event:""},
-    {time:"12 PM",event:""},
-    {time:"1 PM",event:""},
-    {time:"2 PM",event:""},
-    {time:"3 PM",event:""},
-    {time:"4 PM",event:""},
-    {time:"5 PM",event:""},
-    {time:"6 PM",event:""},
-    {time:"7 PM",event:""},
-    {time:"8 PM",event:""},
-    
-];
-let todoevents=JSON.parse(localStorage.getItem("officeday"));
-if (todoevents){
-    officeday=todoevents;
-}
-$("#today").text(presentday);
-workday.forEach(function(timeSeto,index){
-    let timeset=timeSeto.time;
-    let eventcolor=colorR(timeset);
-    let row =
-    '<div class="blocktime"id="'+index+'"><div class="row no-gutters input-group"><div class="col-sm col-lg-1 input=group-prepend hour justify-content sm-end pr-3 pt-3">'+timeset+'</div><textarea class="form-control'+eventcolor+'">'+timeSeto.event+
-    '</textarea><div class ="com-sm col-lg-1 input-group-append"><button class="SaveBtn btn-success"type ="submit"><i class ="fas fa-save"></i></button></div></div></div>';
-    $(".container").append(row);
+$(function () {});
+  
 
-});
-function colorR(time){
-    let newplan=moment(present, "H A");
-    let newentry=moment(time,"H A");
-    if(newplan.isBefore(newentry)){
-        return "later";
-    }else if (newplan.isAfter(newentry)){
-        return "previous";
-    }else{
-        return "now";
-    }
+let presentday = moment().format('MMMM Do YYYY h:mm:ss a');;
+
+let show = moment().format("H A");
+
+
+let dayscheduler = [
+  { clock: "9 AM", event: "" },
+  { clock: "10 AM", event: "" },
+  { clock: "11 AM", event: "" },
+  { clock: "12 PM", event: "" },
+  { clock: "1 PM", event: "" },
+  { clock: "2 PM", event: "" },
+  { clock: "3 PM", event: "" },
+  { clock: "4 PM", event: "" },
+  { clock: "5 PM", event: "" },
+];
+
+/* Local Storage check */
+let officeevents = JSON.parse(localStorage.getItem("officeday"));
+if (officeevents) {
+  dayscheduler = officeevents;
 }
-$(".SaveBtn").on("click",function(){
-    let successID=parseInt(
-        $(this)
-        .closest(".blocktime")
-        .attr("id")
-    );
- let userinput=$.trim(
-     $(this)
-     .parent()
-     .siblings("textarea")
-            .val(),
- );
- workday[successID].event=userinput;
- localStorage.setItem("officeday", JSON.stringify(workday)); 
- 
-})
+
+/* Current Day */
+$("#present").text(presentday);
+
+/* Create rows */
+dayscheduler.forEach(function(timeinterval, index) {
+	let timeLabel = timeinterval.clock;
+	let blockstyle = colorRow(timeLabel);
+	let row =
+		'<div class="notetime" id="' +
+		index +
+		'"><div class="row no-gutters input-group"><div class="col-sm col-lg-1 input-group-prepend hour justify-content-sm-end pr-3 pt-3">' +
+		timeLabel +
+		'</div><textarea class="form-control ' +
+		blockstyle +
+		'">' +
+		timeinterval.event +
+		'</textarea><div class="col-sm col-lg-1 input-group-append"><button class="saveBtn btn-danger" type="submit"><i class="fas fa-save"></i></button></div></div></div>';
+
+	/* Adding rows to container div */
+	$(".container").append(row);
+});
+
+/* Color rows based on current time */
+function colorRow(clock) {
+	let planNow = moment(show, "H A");
+	let planEntry = moment(clock, "H A");
+	if (planNow.isAfter(planEntry)) {
+		return "past";
+	} else if (planNow.isBefore(planEntry)) {
+		return "future";
+	} else {
+		return "present";
+	}
+}
+
+/* Save Events */
+$(".saveBtn").on("click", function() {
+	let saveonclick = parseInt(
+		$(this)
+			.closest(".notetime")
+			.attr("id")
+	);
+	let inputuser = $.trim(
+		$(this)
+			.parent()
+			.siblings("textarea")
+			.val()
+	);
+	dayscheduler[saveonclick].event = inputuser;
+
+	/* Set local storage */
+	localStorage.setItem("officeday", JSON.stringify(dayscheduler));
+});
