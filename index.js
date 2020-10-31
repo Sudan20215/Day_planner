@@ -1,11 +1,12 @@
-$(function () {});
+// loads after document is ready
+$( document ).ready(function(){
   
-
+// shows the present date and time
 let presentday = moment().format('MMMM Do YYYY h:mm:ss a');;
 
 let show = moment().format("H A");
 
-
+// assigining time 
 let dayscheduler = [
   { clock: "9 AM", event: "" },
   { clock: "10 AM", event: "" },
@@ -18,16 +19,16 @@ let dayscheduler = [
   { clock: "5 PM", event: "" },
 ];
 
-/* Local Storage check */
+//stores the value in localstorage
 let officeevents = JSON.parse(localStorage.getItem("officeday"));
 if (officeevents) {
   dayscheduler = officeevents;
 }
 
-/* Current Day */
+// uses from HTML to see the today
 $("#present").text(presentday);
 
-/* Create rows */
+//creating rows
 dayscheduler.forEach(function(timeinterval, index) {
 	let timeLabel = timeinterval.clock;
 	let blockstyle = colorRow(timeLabel);
@@ -40,13 +41,13 @@ dayscheduler.forEach(function(timeinterval, index) {
 		blockstyle +
 		'">' +
 		timeinterval.event +
-		'</textarea><div class="col-sm col-lg-1 input-group-append"><button class="saveBtn btn-danger" type="submit"><i class="fas fa-save"></i></button></div></div></div>';
+		'</textarea><div class="col-sm col-lg-2 input-group-append"><button class="saveBtn btn-danger" type="submit"><i class="fas fa-save"></i></button></div></div></div>';
 
-	/* Adding rows to container div */
+	// initializing the rows
 	$(".container").append(row);
 });
 
-/* Color rows based on current time */
+// decides the color for present past and future
 function colorRow(clock) {
 	let planNow = moment(show, "H A");
 	let planEntry = moment(clock, "H A");
@@ -59,21 +60,23 @@ function colorRow(clock) {
 	}
 }
 
-/* Save Events */
+//after clicking it saves the userinput events
 $(".saveBtn").on("click", function() {
-	let saveonclick = parseInt(
-		$(this)
-			.closest(".notetime")
-			.attr("id")
-	);
 	let inputuser = $.trim(
 		$(this)
 			.parent()
 			.siblings("textarea")
 			.val()
 	);
+	let saveonclick = parseInt(
+		$(this)
+			.closest(".notetime")
+			.attr("id")
+	);
+	
 	dayscheduler[saveonclick].event = inputuser;
 
-	/* Set local storage */
+	
 	localStorage.setItem("officeday", JSON.stringify(dayscheduler));
+});
 });
