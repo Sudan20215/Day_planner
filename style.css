@@ -47,12 +47,12 @@ textarea{
 
 .past {
   background-color: rgb(151, 27, 233);
-  color: rgb(151, 27, 233);
+  color: white;
 }
 
 .present {
   background-color: rosybrown;
-  color: rgb(11, 211, 77);
+  color:white;
 }
 
 .future {
